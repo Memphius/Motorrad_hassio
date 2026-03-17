@@ -34,6 +34,7 @@ De integratie gebruikt de BMW CarData device-code flow:
 - Home Assistant
 - HACS of handmatige installatie
 - een BMW CarData client-ID uit het BMW CarData portaal
+> Zie hier https://www.bmw-motorrad.nl/nl/my-bmw-motorrad-vm4/my-garage.html#/my-bike/ 
 - een BMW Motorrad account met ConnectedRide / clouddata
 
 ## Installatie via HACS
