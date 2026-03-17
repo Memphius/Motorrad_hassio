@@ -99,7 +99,6 @@ class BMWMotorradApiClient:
 
     @staticmethod
     def _generate_code_verifier() -> str:
-        # 43-128 chars; urlsafe, no padding.
         return secrets.token_urlsafe(64)
 
     @staticmethod
@@ -124,26 +123,40 @@ class BMWMotorradApiClient:
             "Content-Type": "application/x-www-form-urlencoded",
         }
 
-        async with self._session.post(
-            url,
-            data=payload,
-            headers=headers,
-            ssl=self._verify_ssl,
-        ) as resp:
-            data = await resp.json(content_type=None)
-            if resp.status >= 400:
-                raise BMWMotorradAuthError(f"Device code request failed: {resp.status} {data}")
+        _LOGGER.warning("BMW device-code request url=%s", url)
+        _LOGGER.warning("BMW device-code payload=%s", payload)
 
-            return DeviceCodeData(
-                device_code=data["device_code"],
-                user_code=data["user_code"],
-                verification_uri=data["verification_uri"],
-                verification_uri_complete=data.get("verification_uri_complete"),
-                expires_in=int(data.get("expires_in", 600)),
-                interval=int(data.get("interval", 5)),
-                code_verifier=code_verifier,
-                code_challenge=code_challenge,
-            )
+        try:
+            async with self._session.post(
+                url,
+                data=payload,
+                headers=headers,
+                ssl=self._verify_ssl,
+            ) as resp:
+                text = await resp.text()
+                _LOGGER.warning("BMW device-code response status=%s", resp.status)
+                _LOGGER.warning("BMW device-code response body=%s", text)
+
+                if resp.status >= 400:
+                    raise BMWMotorradAuthError(
+                        f"Device code request failed: {resp.status} {text}"
+                    )
+
+                data = await resp.json(content_type=None)
+
+                return DeviceCodeData(
+                    device_code=data["device_code"],
+                    user_code=data["user_code"],
+                    verification_uri=data["verification_uri"],
+                    verification_uri_complete=data.get("verification_uri_complete"),
+                    expires_in=int(data.get("expires_in", 600)),
+                    interval=int(data.get("interval", 5)),
+                    code_verifier=code_verifier,
+                    code_challenge=code_challenge,
+                )
+        except Exception as err:
+            _LOGGER.exception("BMW device-code request crashed: %s", err)
+            raise
 
     async def async_exchange_device_code(self, device_code: str, code_verifier: str) -> TokenData:
         url = f"{self._auth_host}{TOKEN_ENDPOINT}"
@@ -158,16 +171,31 @@ class BMWMotorradApiClient:
             "Content-Type": "application/x-www-form-urlencoded",
         }
 
+        _LOGGER.warning("BMW token exchange url=%s", url)
+        _LOGGER.warning(
+            "BMW token exchange payload=%s",
+            {
+                "grant_type": payload["grant_type"],
+                "client_id": payload["client_id"],
+                "device_code": payload["device_code"],
+                "code_verifier_present": bool(payload["code_verifier"]),
+            },
+        )
+
         async with self._session.post(
             url,
             data=payload,
             headers=headers,
             ssl=self._verify_ssl,
         ) as resp:
-            data = await resp.json(content_type=None)
-            if resp.status >= 400:
-                raise BMWMotorradAuthError(f"Token exchange failed: {resp.status} {data}")
+            text = await resp.text()
+            _LOGGER.warning("BMW token exchange response status=%s", resp.status)
+            _LOGGER.warning("BMW token exchange response body=%s", text)
 
+            if resp.status >= 400:
+                raise BMWMotorradAuthError(f"Token exchange failed: {resp.status} {text}")
+
+            data = await resp.json(content_type=None)
             self._token = TokenData.from_token_response(data)
             return self._token
 
@@ -186,16 +214,30 @@ class BMWMotorradApiClient:
             "Content-Type": "application/x-www-form-urlencoded",
         }
 
+        _LOGGER.warning("BMW refresh token url=%s", url)
+        _LOGGER.warning(
+            "BMW refresh token payload=%s",
+            {
+                "grant_type": payload["grant_type"],
+                "client_id": payload["client_id"],
+                "refresh_token_present": bool(payload["refresh_token"]),
+            },
+        )
+
         async with self._session.post(
             url,
             data=payload,
             headers=headers,
             ssl=self._verify_ssl,
         ) as resp:
-            data = await resp.json(content_type=None)
-            if resp.status >= 400:
-                raise BMWMotorradAuthError(f"Refresh failed: {resp.status} {data}")
+            text = await resp.text()
+            _LOGGER.warning("BMW refresh token response status=%s", resp.status)
+            _LOGGER.warning("BMW refresh token response body=%s", text)
 
+            if resp.status >= 400:
+                raise BMWMotorradAuthError(f"Refresh failed: {resp.status} {text}")
+
+            data = await resp.json(content_type=None)
             self._token = TokenData.from_token_response(data)
             return self._token
 
@@ -214,8 +256,12 @@ class BMWMotorradApiClient:
             "Accept": "application/json",
         }
 
+        _LOGGER.warning("BMW Motorrad bikes request url=%s", url)
+
         async with self._session.get(url, headers=headers, ssl=self._verify_ssl) as resp:
-            data = await resp.json(content_type=None)
+            text = await resp.text()
+            _LOGGER.warning("BMW Motorrad bikes response status=%s", resp.status)
+            _LOGGER.warning("BMW Motorrad bikes response body=%s", text)
 
             if resp.status == 401:
                 _LOGGER.debug("401 from Motorrad endpoint, attempting token refresh")
@@ -223,16 +269,21 @@ class BMWMotorradApiClient:
                 headers["Authorization"] = f"Bearer {self._token.access_token}"
 
                 async with self._session.get(url, headers=headers, ssl=self._verify_ssl) as retry_resp:
-                    retry_data = await retry_resp.json(content_type=None)
+                    retry_text = await retry_resp.text()
+                    _LOGGER.warning("BMW Motorrad bikes retry status=%s", retry_resp.status)
+                    _LOGGER.warning("BMW Motorrad bikes retry body=%s", retry_text)
+
                     if retry_resp.status >= 400:
                         raise BMWMotorradAuthError(
-                            f"Unauthorized after refresh: {retry_resp.status} {retry_data}"
+                            f"Unauthorized after refresh: {retry_resp.status} {retry_text}"
                         )
+                    retry_data = await retry_resp.json(content_type=None)
                     return self._parse_bikes(retry_data)
 
             if resp.status >= 400:
-                raise BMWMotorradApiError(f"Bike fetch failed: {resp.status} {data}")
+                raise BMWMotorradApiError(f"Bike fetch failed: {resp.status} {text}")
 
+            data = await resp.json(content_type=None)
             return self._parse_bikes(data)
 
     def _parse_bikes(self, data: Any) -> list[BikeData]:
