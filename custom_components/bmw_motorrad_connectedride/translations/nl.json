@@ -25,5 +25,58 @@
     "abort": {
       "already_configured": "Deze client-ID is al geconfigureerd."
     }
+  },
+  "entity": {
+    "sensor": {
+      "fuel_level": {
+        "name": "Brandstofniveau"
+      },
+      "remaining_range": {
+        "name": "Resterende actieradius"
+      },
+      "total_mileage": {
+        "name": "Odometer"
+      },
+      "trip1": {
+        "name": "Trip 1"
+      },
+      "tire_pressure_front": {
+        "name": "Bandenspanning voor"
+      },
+      "tire_pressure_rear": {
+        "name": "Bandenspanning achter"
+      },
+      "next_service_due_date": {
+        "name": "Volgende service datum"
+      },
+      "next_service_remaining_distance": {
+        "name": "Afstand tot service"
+      },
+      "last_connected_time": {
+        "name": "Laatst verbonden"
+      },
+      "last_activated_time": {
+        "name": "Laatst actief"
+      }
+    },
+    "binary_sensor": {
+      "low_fuel": {
+        "name": "Lage brandstof"
+      },
+      "front_tire_pressure_low": {
+        "name": "Bandenspanning voor laag"
+      },
+      "rear_tire_pressure_low": {
+        "name": "Bandenspanning achter laag"
+      },
+      "service_due_soon": {
+        "name": "Service binnenkort nodig"
+      }
+    },
+    "device_tracker": {
+      "tracker": {
+        "name": "Laatste locatie"
+      }
+    }
   }
 }
