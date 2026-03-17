@@ -10,8 +10,8 @@ from .entity import BMWMotorradEntity
 
 
 class BMWMotorradTracker(BMWMotorradEntity, TrackerEntity):
-    _attr_name = None
-    _attr_translation_key = "tracker"
+    _attr_name = "Location"
+    _attr_icon = "mdi:map-marker"
 
     def __init__(self, coordinator, bike_id: str) -> None:
         super().__init__(coordinator, bike_id)
@@ -30,6 +30,8 @@ class BMWMotorradTracker(BMWMotorradEntity, TrackerEntity):
         return SourceType.GPS if self.bike.latitude is not None and self.bike.longitude is not None else None
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> None:
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+) -> None:
     coordinator = entry.runtime_data.coordinator
     async_add_entities([BMWMotorradTracker(coordinator, bike_id) for bike_id in coordinator.data])
