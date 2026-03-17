@@ -9,5 +9,5 @@
   "issue_tracker": "https://github.com/MemphiusNL/motorrad_hassio/issues",
   "loggers": ["custom_components.bmw_motorrad_connectedride"],
   "requirements": [],
-  "version": "0.1.3"
+  "version": "0.1.4"
 }
