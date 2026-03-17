@@ -15,7 +15,8 @@ class BMWMotorradTracker(BMWMotorradEntity, TrackerEntity):
 
     def __init__(self, coordinator, bike_id: str) -> None:
         super().__init__(coordinator, bike_id)
-        self._attr_unique_id = f"{bike_id}_tracker"
+        self._attr_unique_id = f"v2_{self.bike_slug}_location"
+        self._attr_suggested_object_id = f"{self.bike_slug}_location"
 
     @property
     def latitude(self):
