@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 import voluptuous as vol
@@ -22,6 +23,8 @@ from .const import (
     DEFAULT_POLL_INTERVAL,
     DOMAIN,
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class BMWMotorradConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -54,7 +57,11 @@ class BMWMotorradConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             try:
                 code = await client.async_request_device_code()
-            except BMWMotorradAuthError:
+            except BMWMotorradAuthError as err:
+                _LOGGER.exception("BMW auth error during device-code request: %s", err)
+                errors["base"] = "cannot_connect"
+            except Exception as err:
+                _LOGGER.exception("Unexpected BMW auth error during device-code request: %s", err)
                 errors["base"] = "cannot_connect"
             else:
                 self._device_code = code.device_code
@@ -99,7 +106,11 @@ class BMWMotorradConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     self._code_verifier,
                 )
                 await client.async_get_bikes()
-            except BMWMotorradAuthError:
+            except BMWMotorradAuthError as err:
+                _LOGGER.exception("BMW auth error during token exchange / bike fetch: %s", err)
+                errors["base"] = "authorize_failed"
+            except Exception as err:
+                _LOGGER.exception("Unexpected BMW auth error during authorize step: %s", err)
                 errors["base"] = "authorize_failed"
             else:
                 data = dict(self._user_input)
