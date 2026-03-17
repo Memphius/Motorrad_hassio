@@ -209,6 +209,8 @@ class BMWMotorradApiClient:
             "client_id": self._client_id,
             "refresh_token": self._token.refresh_token,
             "grant_type": "refresh_token",
+            "response_type": "token",
+            "scope": "authenticate_user",
         }
         headers = {
             "Accept": "application/json",
@@ -222,6 +224,8 @@ class BMWMotorradApiClient:
                 "client_id": self._client_id,
                 "refresh_token_present": bool(payload["refresh_token"]),
                 "grant_type": payload["grant_type"],
+                "response_type": payload["response_type"],
+                "scope": payload["scope"],
             },
         )
 
