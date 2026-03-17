@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.util import slugify
 
 from .const import ATTR_BIKE_ID, ATTR_RAW, DOMAIN
 
@@ -17,22 +18,26 @@ class BMWMotorradEntity(CoordinatorEntity):
 
     @property
     def bike(self):
-        """Return the current bike data for this entity."""
         return self.coordinator.data[self._bike_id]
 
     @property
-    def device_info(self) -> DeviceInfo:
-        """Return device info."""
-        bike = self.bike
+    def bike_name(self) -> str:
+        return self.bike.name or "BMW Motorrad"
 
-        identifiers = {(DOMAIN, self._bike_id)}
-        bike_name = bike.name or "BMW Motorrad"
+    @property
+    def bike_slug(self) -> str:
+        return slugify(self.bike_name)
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        bike = self.bike
 
         model_parts: list[str] = []
         if bike.name:
             model_parts.append(bike.name)
         if bike.type_key:
             model_parts.append(f"Type {bike.type_key}")
+
         model = " - ".join(model_parts) if model_parts else "ConnectedRide bike"
 
         sw_version = None
@@ -42,9 +47,9 @@ class BMWMotorradEntity(CoordinatorEntity):
         serial_number = bike.vin or self._bike_id
 
         return DeviceInfo(
-            identifiers=identifiers,
+            identifiers={(DOMAIN, self._bike_id)},
             manufacturer="BMW Motorrad",
-            name=bike_name,
+            name=self.bike_name,
             model=model,
             serial_number=serial_number,
             sw_version=sw_version,
@@ -52,15 +57,14 @@ class BMWMotorradEntity(CoordinatorEntity):
 
     @property
     def available(self) -> bool:
-        """Return True if entity is available."""
         return self._bike_id in self.coordinator.data and self.coordinator.last_update_success
 
     @property
     def extra_state_attributes(self) -> dict:
-        """Return extra attributes."""
         bike = self.bike
         attrs = {
             ATTR_BIKE_ID: self._bike_id,
+            ATTR_RAW: bike.raw,
         }
 
         if bike.vin:
@@ -70,5 +74,4 @@ class BMWMotorradEntity(CoordinatorEntity):
         if bike.color:
             attrs["color"] = bike.color
 
-        attrs[ATTR_RAW] = bike.raw
         return attrs
