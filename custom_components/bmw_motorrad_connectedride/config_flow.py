@@ -108,9 +108,8 @@ class BMWMotorradConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     self._device_code,
                     self._code_verifier,
                 )
-                await client.async_get_bikes()
             except BMWMotorradAuthError as err:
-                _LOGGER.exception("BMW auth error during token exchange / bike fetch: %s", err)
+                _LOGGER.exception("BMW auth error during token exchange: %s", err)
                 errors["base"] = "authorize_failed"
             except Exception as err:
                 _LOGGER.exception("Unexpected BMW auth error during authorize step: %s", err)
@@ -126,7 +125,3 @@ class BMWMotorradConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors=errors,
             description_placeholders=placeholders,
         )
-
-    async def async_step_reauth(self, entry_data: dict[str, Any]) -> FlowResult:
-        self._user_input = dict(entry_data)
-        return await self.async_step_user(self._user_input)
