@@ -26,13 +26,13 @@ class BMWMotorradEntity(CoordinatorEntity):
         bike = self.bike
 
         identifiers = {(DOMAIN, self._bike_id)}
+        bike_name = bike.name or "BMW Motorrad"
 
         model_parts: list[str] = []
         if bike.name:
             model_parts.append(bike.name)
         if bike.type_key:
             model_parts.append(f"Type {bike.type_key}")
-
         model = " - ".join(model_parts) if model_parts else "ConnectedRide bike"
 
         sw_version = None
@@ -44,7 +44,7 @@ class BMWMotorradEntity(CoordinatorEntity):
         return DeviceInfo(
             identifiers=identifiers,
             manufacturer="BMW Motorrad",
-            name=bike.name or "BMW Motorrad",
+            name=bike_name,
             model=model,
             serial_number=serial_number,
             sw_version=sw_version,
