@@ -167,7 +167,7 @@ class BMWMotorradApiClient:
         }
         headers = {
             "Accept": "application/json",
-            "Content-Type": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
         }
 
         _LOGGER.warning("BMW token exchange url=%s", url)
@@ -184,7 +184,7 @@ class BMWMotorradApiClient:
 
         async with self._session.post(
             url,
-            json=payload,
+            data=payload,
             headers=headers,
             ssl=self._verify_ssl,
         ) as resp:
@@ -211,7 +211,7 @@ class BMWMotorradApiClient:
         }
         headers = {
             "Accept": "application/json",
-            "Content-Type": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
         }
 
         _LOGGER.warning("BMW refresh token url=%s", url)
@@ -226,7 +226,7 @@ class BMWMotorradApiClient:
 
         async with self._session.post(
             url,
-            json=payload,
+            data=payload,
             headers=headers,
             ssl=self._verify_ssl,
         ) as resp:
