@@ -1,13 +1,13 @@
 {
   "domain": "bmw_motorrad_connectedride",
   "name": "BMW Motorrad ConnectedRide",
-  "codeowners": ["@openai"],
+  "codeowners": ["@MemphiusNL"],
   "config_flow": true,
   "documentation": "https://bmw-cardata.bmwgroup.com/customer/public/api-documentation",
   "integration_type": "service",
   "iot_class": "cloud_polling",
-  "issue_tracker": "https://github.com/openai/openai-caas/issues",
+  "issue_tracker": "https://github.com/MemphiusNL/motorrad_hassio/issues",
   "loggers": ["custom_components.bmw_motorrad_connectedride"],
   "requirements": [],
-  "version": "0.1.0"
+  "version": "2023.3.0"
 }
