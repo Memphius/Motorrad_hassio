@@ -26,7 +26,7 @@ class BMWMotorradSensorDescription(SensorEntityDescription):
 SENSORS: tuple[BMWMotorradSensorDescription, ...] = (
     BMWMotorradSensorDescription(
         key="fuel_level",
-        translation_key="fuel_level",
+        name="Fuel level",
         icon="mdi:fuel",
         native_unit_of_measurement=PERCENTAGE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -34,7 +34,7 @@ SENSORS: tuple[BMWMotorradSensorDescription, ...] = (
     ),
     BMWMotorradSensorDescription(
         key="remaining_range",
-        translation_key="remaining_range",
+        name="Remaining range",
         icon="mdi:map-marker-distance",
         device_class=SensorDeviceClass.DISTANCE,
         native_unit_of_measurement=UnitOfLength.KILOMETERS,
@@ -43,7 +43,7 @@ SENSORS: tuple[BMWMotorradSensorDescription, ...] = (
     ),
     BMWMotorradSensorDescription(
         key="total_mileage",
-        translation_key="total_mileage",
+        name="Total mileage",
         icon="mdi:speedometer",
         device_class=SensorDeviceClass.DISTANCE,
         native_unit_of_measurement=UnitOfLength.KILOMETERS,
@@ -52,7 +52,7 @@ SENSORS: tuple[BMWMotorradSensorDescription, ...] = (
     ),
     BMWMotorradSensorDescription(
         key="trip1",
-        translation_key="trip1",
+        name="Trip 1",
         icon="mdi:road-variant",
         device_class=SensorDeviceClass.DISTANCE,
         native_unit_of_measurement=UnitOfLength.KILOMETERS,
@@ -61,7 +61,7 @@ SENSORS: tuple[BMWMotorradSensorDescription, ...] = (
     ),
     BMWMotorradSensorDescription(
         key="tire_pressure_front",
-        translation_key="tire_pressure_front",
+        name="Tire pressure front",
         icon="mdi:gauge",
         native_unit_of_measurement=UnitOfPressure.BAR,
         state_class=SensorStateClass.MEASUREMENT,
@@ -69,7 +69,7 @@ SENSORS: tuple[BMWMotorradSensorDescription, ...] = (
     ),
     BMWMotorradSensorDescription(
         key="tire_pressure_rear",
-        translation_key="tire_pressure_rear",
+        name="Tire pressure rear",
         icon="mdi:gauge",
         native_unit_of_measurement=UnitOfPressure.BAR,
         state_class=SensorStateClass.MEASUREMENT,
@@ -77,7 +77,7 @@ SENSORS: tuple[BMWMotorradSensorDescription, ...] = (
     ),
     BMWMotorradSensorDescription(
         key="next_service_due_date",
-        translation_key="next_service_due_date",
+        name="Next service due date",
         icon="mdi:wrench-clock",
         device_class=SensorDeviceClass.TIMESTAMP,
         entity_category=EntityCategory.DIAGNOSTIC,
@@ -85,7 +85,7 @@ SENSORS: tuple[BMWMotorradSensorDescription, ...] = (
     ),
     BMWMotorradSensorDescription(
         key="next_service_remaining_distance",
-        translation_key="next_service_remaining_distance",
+        name="Next service remaining distance",
         icon="mdi:wrench-outline",
         device_class=SensorDeviceClass.DISTANCE,
         native_unit_of_measurement=UnitOfLength.KILOMETERS,
@@ -95,7 +95,7 @@ SENSORS: tuple[BMWMotorradSensorDescription, ...] = (
     ),
     BMWMotorradSensorDescription(
         key="last_connected_time",
-        translation_key="last_connected_time",
+        name="Last connected time",
         icon="mdi:clock-check-outline",
         device_class=SensorDeviceClass.TIMESTAMP,
         entity_category=EntityCategory.DIAGNOSTIC,
@@ -103,7 +103,7 @@ SENSORS: tuple[BMWMotorradSensorDescription, ...] = (
     ),
     BMWMotorradSensorDescription(
         key="last_activated_time",
-        translation_key="last_activated_time",
+        name="Last activated time",
         icon="mdi:clock-start",
         device_class=SensorDeviceClass.TIMESTAMP,
         entity_category=EntityCategory.DIAGNOSTIC,
@@ -125,7 +125,9 @@ class BMWMotorradSensor(BMWMotorradEntity, SensorEntity):
         return self.entity_description.value_fn(self.bike)
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> None:
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+) -> None:
     coordinator = entry.runtime_data.coordinator
     entities: list[SensorEntity] = []
     for bike_id in coordinator.data:
