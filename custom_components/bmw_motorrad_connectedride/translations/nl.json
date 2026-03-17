@@ -3,51 +3,27 @@
     "step": {
       "user": {
         "title": "BMW Motorrad ConnectedRide",
-        "description": "Enter the BMW client ID from the CarData/technical access portal and the Motorrad endpoint settings.",
+        "description": "Voer de BMW CarData client-ID en Motorrad endpoint-instellingen in.",
         "data": {
           "client_id": "Client ID",
-          "country": "Country code (example: nl-NL)",
-          "api_host": "Motorrad API host",
-          "device_code_host": "BMW device-code host",
-          "token_host": "BMW token host",
-          "poll_interval": "Poll interval (seconds)",
-          "verify_ssl": "Verify SSL"
+          "country": "Landcode (bijvoorbeeld nl-NL)",
+          "api_host": "Motorrad API-host",
+          "auth_host": "BMW CarData auth-host",
+          "poll_interval": "Poll-interval (seconden)",
+          "verify_ssl": "SSL verifiëren"
         }
       },
       "authorize": {
-        "title": "Authorize device",
-        "description": "Open {verification_uri}, enter the user code {user_code}, approve the device, then submit this step."
+        "title": "Apparaat autoriseren",
+        "description": "Open {verification_uri_complete} (of {verification_uri}), voer zo nodig de code {user_code} in, keur het apparaat goed en verzend daarna deze stap."
       }
     },
     "error": {
-      "cannot_connect": "Could not request a device code from BMW.",
-      "authorize_failed": "Device authorization was not completed or the Motorrad endpoint rejected the token."
+      "cannot_connect": "Kon geen device code opvragen bij BMW.",
+      "authorize_failed": "Apparaatautorisatie is niet voltooid of het Motorrad-endpoint accepteerde het token niet."
     },
     "abort": {
-      "already_configured": "This client ID is already configured."
-    }
-  },
-  "entity": {
-    "sensor": {
-      "fuel_level": {"name": "Fuel level"},
-      "remaining_range": {"name": "Remaining range"},
-      "total_mileage": {"name": "Total mileage"},
-      "trip1": {"name": "Trip 1"},
-      "tire_pressure_front": {"name": "Front tire pressure"},
-      "tire_pressure_rear": {"name": "Rear tire pressure"},
-      "next_service_due_date": {"name": "Next service due date"},
-      "next_service_remaining_distance": {"name": "Next service remaining distance"},
-      "last_connected_time": {"name": "Last connected time"},
-      "last_activated_time": {"name": "Last activated time"}
-    },
-    "binary_sensor": {
-      "low_fuel": {"name": "Low fuel"},
-      "front_tire_pressure_low": {"name": "Front tire pressure low"},
-      "rear_tire_pressure_low": {"name": "Rear tire pressure low"},
-      "service_due_soon": {"name": "Service due soon"}
-    },
-    "device_tracker": {
-      "tracker": {"name": "Location"}
+      "already_configured": "Deze client-ID is al geconfigureerd."
     }
   }
 }
