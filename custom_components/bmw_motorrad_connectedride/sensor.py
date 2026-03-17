@@ -118,7 +118,8 @@ class BMWMotorradSensor(BMWMotorradEntity, SensorEntity):
     def __init__(self, coordinator, bike_id: str, description: BMWMotorradSensorDescription) -> None:
         super().__init__(coordinator, bike_id)
         self.entity_description = description
-        self._attr_unique_id = f"{bike_id}_{description.key}"
+        self._attr_unique_id = f"v2_{self.bike_slug}_{description.key}"
+        self._attr_suggested_object_id = f"{self.bike_slug}_{description.key}"
 
     @property
     def native_value(self):
