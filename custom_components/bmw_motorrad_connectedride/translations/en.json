@@ -3,20 +3,19 @@
     "step": {
       "user": {
         "title": "BMW Motorrad ConnectedRide",
-        "description": "Enter the BMW client ID from the CarData/technical access portal and the Motorrad endpoint settings.",
+        "description": "Enter the BMW CarData client ID and Motorrad endpoint settings.",
         "data": {
           "client_id": "Client ID",
           "country": "Country code (example: nl-NL)",
           "api_host": "Motorrad API host",
-          "device_code_host": "BMW device-code host",
-          "token_host": "BMW token host",
+          "auth_host": "BMW CarData auth host",
           "poll_interval": "Poll interval (seconds)",
           "verify_ssl": "Verify SSL"
         }
       },
       "authorize": {
         "title": "Authorize device",
-        "description": "Open {verification_uri}, enter the user code {user_code}, approve the device, then submit this step."
+        "description": "Open {verification_uri_complete} (or {verification_uri}), enter the user code {user_code} if needed, approve the device, then submit this step."
       }
     },
     "error": {
@@ -25,29 +24,6 @@
     },
     "abort": {
       "already_configured": "This client ID is already configured."
-    }
-  },
-  "entity": {
-    "sensor": {
-      "fuel_level": {"name": "Fuel level"},
-      "remaining_range": {"name": "Remaining range"},
-      "total_mileage": {"name": "Total mileage"},
-      "trip1": {"name": "Trip 1"},
-      "tire_pressure_front": {"name": "Front tire pressure"},
-      "tire_pressure_rear": {"name": "Rear tire pressure"},
-      "next_service_due_date": {"name": "Next service due date"},
-      "next_service_remaining_distance": {"name": "Next service remaining distance"},
-      "last_connected_time": {"name": "Last connected time"},
-      "last_activated_time": {"name": "Last activated time"}
-    },
-    "binary_sensor": {
-      "low_fuel": {"name": "Low fuel"},
-      "front_tire_pressure_low": {"name": "Front tire pressure low"},
-      "rear_tire_pressure_low": {"name": "Rear tire pressure low"},
-      "service_due_soon": {"name": "Service due soon"}
-    },
-    "device_tracker": {
-      "tracker": {"name": "Location"}
     }
   }
 }
