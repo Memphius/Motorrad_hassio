@@ -20,22 +20,26 @@ class BMWMotorradBinarySensorDescription(BinarySensorEntityDescription):
 BINARY_SENSORS: tuple[BMWMotorradBinarySensorDescription, ...] = (
     BMWMotorradBinarySensorDescription(
         key="low_fuel",
-        translation_key="low_fuel",
+        name="Low fuel",
+        icon="mdi:fuel-alert",
         value_fn=lambda bike: (bike.fuel_level or 0) <= 20,
     ),
     BMWMotorradBinarySensorDescription(
         key="front_tire_pressure_low",
-        translation_key="front_tire_pressure_low",
+        name="Front tire pressure low",
+        icon="mdi:car-tire-alert",
         value_fn=lambda bike: (bike.tire_pressure_front_bar or 0) < 2.0,
     ),
     BMWMotorradBinarySensorDescription(
         key="rear_tire_pressure_low",
-        translation_key="rear_tire_pressure_low",
+        name="Rear tire pressure low",
+        icon="mdi:car-tire-alert",
         value_fn=lambda bike: (bike.tire_pressure_rear_bar or 0) < 2.3,
     ),
     BMWMotorradBinarySensorDescription(
         key="service_due_soon",
-        translation_key="service_due_soon",
+        name="Service due soon",
+        icon="mdi:wrench",
         value_fn=lambda bike: (bike.next_service_remaining_distance_km or 999999) < 1000,
     ),
 )
@@ -54,7 +58,9 @@ class BMWMotorradBinarySensor(BMWMotorradEntity, BinarySensorEntity):
         return self.entity_description.value_fn(self.bike)
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> None:
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+) -> None:
     coordinator = entry.runtime_data.coordinator
     entities: list[BinarySensorEntity] = []
     for bike_id in coordinator.data:
