@@ -99,7 +99,6 @@ class BMWMotorradApiClient:
 
     @staticmethod
     def _generate_code_verifier() -> str:
-        # RFC 7636: 43-128 chars, url-safe.
         return secrets.token_urlsafe(64)
 
     @staticmethod
@@ -112,8 +111,6 @@ class BMWMotorradApiClient:
         code_verifier = self._generate_code_verifier()
         code_challenge = self._generate_code_challenge(code_verifier)
 
-        # Based on BMW CarData "Device Flow with PKCE":
-        # first step uses client_id + code_challenge.
         payload = {
             "client_id": self._client_id,
             "code_challenge": code_challenge,
@@ -166,6 +163,7 @@ class BMWMotorradApiClient:
             "device_code": device_code,
             "code_verifier": code_verifier,
             "grant_type": "urn:ietf:params:oauth:grant-type:device_code",
+            "response_type": "device_code",
         }
         headers = {
             "Accept": "application/json",
@@ -180,6 +178,7 @@ class BMWMotorradApiClient:
                 "device_code_present": bool(device_code),
                 "code_verifier_present": bool(code_verifier),
                 "grant_type": payload["grant_type"],
+                "response_type": payload["response_type"],
             },
         )
 
