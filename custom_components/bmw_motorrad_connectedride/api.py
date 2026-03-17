@@ -10,7 +10,7 @@ from typing import Any
 
 import aiohttp
 
-from .const import BIKES_ENDPOINT_TMPL, DEVICE_CODE_ENDPOINT, SCOPES, TOKEN_ENDPOINT
+from .const import BIKES_ENDPOINT_TMPL, DEVICE_CODE_ENDPOINT, TOKEN_ENDPOINT
 from .models import BikeData
 
 _LOGGER = logging.getLogger(__name__)
@@ -83,7 +83,7 @@ class BMWMotorradApiClient:
         verify_ssl: bool,
     ) -> None:
         self._session = session
-        self._client_id = client_id
+        self._client_id = client_id.strip().lower()
         self._api_host = api_host.rstrip("/")
         self._auth_host = auth_host.rstrip("/")
         self._country = country
@@ -99,6 +99,7 @@ class BMWMotorradApiClient:
 
     @staticmethod
     def _generate_code_verifier() -> str:
+        # RFC 7636: 43-128 chars, url-safe.
         return secrets.token_urlsafe(64)
 
     @staticmethod
@@ -111,25 +112,25 @@ class BMWMotorradApiClient:
         code_verifier = self._generate_code_verifier()
         code_challenge = self._generate_code_challenge(code_verifier)
 
+        # Based on BMW CarData "Device Flow with PKCE":
+        # first step uses client_id + code_challenge.
         payload = {
             "client_id": self._client_id,
-            "response_type": "device_code",
-            "scope": " ".join(SCOPES),
             "code_challenge": code_challenge,
-            "code_challenge_method": "S256",
         }
         headers = {
             "Accept": "application/json",
-            "Content-Type": "application/x-www-form-urlencoded",
+            "Content-Type": "application/json",
         }
 
         _LOGGER.warning("BMW device-code request url=%s", url)
-        _LOGGER.warning("BMW device-code payload=%s", payload)
+        _LOGGER.warning("BMW device-code payload keys=%s", list(payload.keys()))
+        _LOGGER.warning("BMW device-code client_id(lowercase)=%s", self._client_id)
 
         try:
             async with self._session.post(
                 url,
-                data=payload,
+                json=payload,
                 headers=headers,
                 ssl=self._verify_ssl,
             ) as resp:
@@ -161,30 +162,30 @@ class BMWMotorradApiClient:
     async def async_exchange_device_code(self, device_code: str, code_verifier: str) -> TokenData:
         url = f"{self._auth_host}{TOKEN_ENDPOINT}"
         payload = {
-            "grant_type": "urn:ietf:params:oauth:grant-type:device_code",
             "client_id": self._client_id,
             "device_code": device_code,
             "code_verifier": code_verifier,
+            "grant_type": "urn:ietf:params:oauth:grant-type:device_code",
         }
         headers = {
             "Accept": "application/json",
-            "Content-Type": "application/x-www-form-urlencoded",
+            "Content-Type": "application/json",
         }
 
         _LOGGER.warning("BMW token exchange url=%s", url)
         _LOGGER.warning(
             "BMW token exchange payload=%s",
             {
+                "client_id": self._client_id,
+                "device_code_present": bool(device_code),
+                "code_verifier_present": bool(code_verifier),
                 "grant_type": payload["grant_type"],
-                "client_id": payload["client_id"],
-                "device_code": payload["device_code"],
-                "code_verifier_present": bool(payload["code_verifier"]),
             },
         )
 
         async with self._session.post(
             url,
-            data=payload,
+            json=payload,
             headers=headers,
             ssl=self._verify_ssl,
         ) as resp:
@@ -205,28 +206,28 @@ class BMWMotorradApiClient:
 
         url = f"{self._auth_host}{TOKEN_ENDPOINT}"
         payload = {
-            "grant_type": "refresh_token",
             "client_id": self._client_id,
             "refresh_token": self._token.refresh_token,
+            "grant_type": "refresh_token",
         }
         headers = {
             "Accept": "application/json",
-            "Content-Type": "application/x-www-form-urlencoded",
+            "Content-Type": "application/json",
         }
 
         _LOGGER.warning("BMW refresh token url=%s", url)
         _LOGGER.warning(
             "BMW refresh token payload=%s",
             {
-                "grant_type": payload["grant_type"],
-                "client_id": payload["client_id"],
+                "client_id": self._client_id,
                 "refresh_token_present": bool(payload["refresh_token"]),
+                "grant_type": payload["grant_type"],
             },
         )
 
         async with self._session.post(
             url,
-            data=payload,
+            json=payload,
             headers=headers,
             ssl=self._verify_ssl,
         ) as resp:
