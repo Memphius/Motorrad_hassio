@@ -27,6 +27,7 @@ SENSORS: tuple[BMWMotorradSensorDescription, ...] = (
     BMWMotorradSensorDescription(
         key="fuel_level",
         translation_key="fuel_level",
+        icon="mdi:fuel",
         native_unit_of_measurement=PERCENTAGE,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda bike: bike.fuel_level,
@@ -34,6 +35,7 @@ SENSORS: tuple[BMWMotorradSensorDescription, ...] = (
     BMWMotorradSensorDescription(
         key="remaining_range",
         translation_key="remaining_range",
+        icon="mdi:map-marker-distance",
         device_class=SensorDeviceClass.DISTANCE,
         native_unit_of_measurement=UnitOfLength.KILOMETERS,
         state_class=SensorStateClass.MEASUREMENT,
@@ -42,6 +44,7 @@ SENSORS: tuple[BMWMotorradSensorDescription, ...] = (
     BMWMotorradSensorDescription(
         key="total_mileage",
         translation_key="total_mileage",
+        icon="mdi:speedometer",
         device_class=SensorDeviceClass.DISTANCE,
         native_unit_of_measurement=UnitOfLength.KILOMETERS,
         state_class=SensorStateClass.TOTAL_INCREASING,
@@ -50,6 +53,7 @@ SENSORS: tuple[BMWMotorradSensorDescription, ...] = (
     BMWMotorradSensorDescription(
         key="trip1",
         translation_key="trip1",
+        icon="mdi:road-variant",
         device_class=SensorDeviceClass.DISTANCE,
         native_unit_of_measurement=UnitOfLength.KILOMETERS,
         state_class=SensorStateClass.TOTAL,
@@ -58,6 +62,7 @@ SENSORS: tuple[BMWMotorradSensorDescription, ...] = (
     BMWMotorradSensorDescription(
         key="tire_pressure_front",
         translation_key="tire_pressure_front",
+        icon="mdi:gauge",
         native_unit_of_measurement=UnitOfPressure.BAR,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda bike: bike.tire_pressure_front_bar,
@@ -65,6 +70,7 @@ SENSORS: tuple[BMWMotorradSensorDescription, ...] = (
     BMWMotorradSensorDescription(
         key="tire_pressure_rear",
         translation_key="tire_pressure_rear",
+        icon="mdi:gauge",
         native_unit_of_measurement=UnitOfPressure.BAR,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda bike: bike.tire_pressure_rear_bar,
@@ -72,6 +78,7 @@ SENSORS: tuple[BMWMotorradSensorDescription, ...] = (
     BMWMotorradSensorDescription(
         key="next_service_due_date",
         translation_key="next_service_due_date",
+        icon="mdi:wrench-clock",
         device_class=SensorDeviceClass.TIMESTAMP,
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda bike: bike.next_service_due_date,
@@ -79,6 +86,7 @@ SENSORS: tuple[BMWMotorradSensorDescription, ...] = (
     BMWMotorradSensorDescription(
         key="next_service_remaining_distance",
         translation_key="next_service_remaining_distance",
+        icon="mdi:wrench-outline",
         device_class=SensorDeviceClass.DISTANCE,
         native_unit_of_measurement=UnitOfLength.KILOMETERS,
         entity_category=EntityCategory.DIAGNOSTIC,
@@ -88,6 +96,7 @@ SENSORS: tuple[BMWMotorradSensorDescription, ...] = (
     BMWMotorradSensorDescription(
         key="last_connected_time",
         translation_key="last_connected_time",
+        icon="mdi:clock-check-outline",
         device_class=SensorDeviceClass.TIMESTAMP,
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda bike: bike.last_connected_time,
@@ -95,6 +104,7 @@ SENSORS: tuple[BMWMotorradSensorDescription, ...] = (
     BMWMotorradSensorDescription(
         key="last_activated_time",
         translation_key="last_activated_time",
+        icon="mdi:clock-start",
         device_class=SensorDeviceClass.TIMESTAMP,
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda bike: bike.last_activated_time,
