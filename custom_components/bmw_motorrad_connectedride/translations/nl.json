@@ -15,7 +15,7 @@
       },
       "authorize": {
         "title": "Apparaat autoriseren",
-        "description": "Open {verification_uri_complete} (of {verification_uri}), voer zo nodig de code {user_code} in, keur het apparaat goed en verzend daarna deze stap."
+        "description": "Open {verification_uri_complete} (of {verification_uri}), voer zo nodig de code {user_code} in, keur het apparaat goed en klik daarna opnieuw op verzenden."
       }
     },
     "error": {
