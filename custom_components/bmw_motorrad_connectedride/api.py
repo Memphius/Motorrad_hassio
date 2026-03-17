@@ -114,6 +114,7 @@ class BMWMotorradApiClient:
         payload = {
             "client_id": self._client_id,
             "code_challenge": code_challenge,
+            "code_challenge_method": "S256",
         }
         headers = {
             "Accept": "application/json",
