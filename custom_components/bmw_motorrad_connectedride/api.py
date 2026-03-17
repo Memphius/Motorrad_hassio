@@ -289,7 +289,14 @@ class BMWMotorradApiClient:
 
     def _parse_bikes(self, data: Any) -> list[BikeData]:
         if isinstance(data, dict):
-            if "items" in data and isinstance(data["items"], list):
+            if (
+                "bmcUserBikes" in data
+                and isinstance(data["bmcUserBikes"], dict)
+                and "bikes" in data["bmcUserBikes"]
+                and isinstance(data["bmcUserBikes"]["bikes"], list)
+            ):
+                items = data["bmcUserBikes"]["bikes"]
+            elif "items" in data and isinstance(data["items"], list):
                 items = data["items"]
             elif "bikes" in data and isinstance(data["bikes"], list):
                 items = data["bikes"]
