@@ -42,7 +42,10 @@ class BMWMotorradConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
 
         if user_input is not None:
+            user_input = dict(user_input)
+            user_input[CONF_CLIENT_ID] = user_input[CONF_CLIENT_ID].strip().lower()
             self._user_input = user_input
+
             await self.async_set_unique_id(user_input[CONF_CLIENT_ID])
             self._abort_if_unique_id_configured()
 
